@@ -13,7 +13,7 @@ The repository packages two independent factor-ranking methods behind one local 
 - **mRMR** uses univariate regression F-statistic relevance, absolute Pearson redundancy, and greedy quotient selection.
 - **Marginal-SAGE** fits one LGBM or MLP model and estimates global validation MSE contribution with empirical marginal imputation and random factor permutations.
 
-The runtime does not require the third-party mrmr or sage packages. Those packages are optional dependencies for parity tests only.
+Both methods use the same JSON configuration workflow and command-line entry point, with inspectable ranking artifacts and run records.
 
 ## What It Does Not Do
 
@@ -64,7 +64,7 @@ Read references/output_contract.md and references/metric_definitions.md before c
 - Inspect sage_std, converged, and convergence_ratio before interpreting a SAGE ordering.
 - Validate Top-K on a locked holdout against the full factor set and multiple random Top-K baselines.
 
-The current runnable validation scope covers smoke workflows, output contracts, and optional reference-package parity tests. It does not claim positive out-of-sample RankIC, MSE improvement, portfolio returns, or trading performance.
+The current runnable validation scope covers smoke workflows, method behavior, convergence diagnostics, and output contracts. It does not claim positive out-of-sample RankIC, MSE improvement, portfolio returns, or trading performance.
 
 ## References
 

@@ -14,12 +14,12 @@ role: skill | platform: codex | category: tooling | status: active | validation:
 
 ---
 
-skill-factor-ranking-sage 是一个自包含的量化模型因子排名 Skill。运行时不依赖第三方 mrmr 或 sage 包，只保留两个相互独立的方法：
+skill-factor-ranking-sage 是一个面向量化研究的模型因子排名 Skill，提供两个相互独立的方法：
 
 - **mRMR**：使用回归 F 统计量衡量 relevance，使用绝对 Pearson 相关衡量 redundancy，通过贪心 quotient 规则选择 Top-K。
 - **Marginal-SAGE**：训练一次固定 LGBM 或 MLP，在验证样本上通过经验边际填充和随机排列估计全局 MSE 贡献及标准误。
 
-第三方 mrmr 和 sage 包只用于可选一致性测试，不是运行依赖。
+两种方法均通过统一的 JSON 配置和命令行入口运行，并输出可检查、可复现的排名结果与运行记录。
 
 ## 这个 Skill 解决什么问题
 
@@ -215,8 +215,8 @@ mRMR额外输出 mrmr_ranking.csv 和 mrmr_redundancy_matrix.csv。SAGE额外输
 当前验证等级为 runnable：
 
 - 三个toy smoke工作流可运行
-- 本地mRMR与参考包在可选parity测试中对齐
-- 本地Marginal-SAGE与参考包在可选parity测试中对齐
+- mRMR排序、冗余处理和输出契约有自动化测试
+- Marginal-SAGE采样、收敛诊断和输出契约有自动化测试
 - 核心配置、输出契约和移除功能边界有自动化测试
 
 该等级不表示mRMR或SAGE能够提高样本外RankIC、MSE、组合收益或交易收益。
