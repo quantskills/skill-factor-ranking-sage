@@ -1,68 +1,78 @@
 ---
-name: my-skill-name
-description: "One sentence on what this skill does, with concrete capabilities. Use when an agent needs to <trigger scenario 1>, <trigger scenario 2>, or <trigger scenario 3> on portable agent platforms such as Claude Code, OpenClaw, or Codex-style skill systems."
-quantSkills:
-  organization: https://github.com/quantskills
-  repository: quantskills/skill-my-skill-name
-  repository_url: https://github.com/quantskills/skill-my-skill-name
-  project_type: skill
-  collection: <collection-name>
-  license: GPL-3.0
-  category: tooling            # trader-research / factor / data-api / replication / monitor / analyst / tooling
-  tags: [tag-one, tag-two]     # 小写连字符,1-10 个
-  platforms: [claude-code, codex, openclaw]
-  language: zh-en
-  status: draft                # draft / stable / deprecated
-  validation_level: listed     # listed / runnable / verified(社区三级验证体系)
-  maintainer_type: community   # official / community
-  requires: []                 # dependent sibling skill-* or agent-* repository names
-  summary_zh: 一句话中文简介(8-120 字符)
-  summary_en: One-line English summary (8-200 chars)
+name: factor-ranking-sage
+description: "Rank and select quantitative model factors from local factor and label CSV files with one of two self-contained methods: deterministic regression mRMR using F-statistic relevance and Pearson redundancy, or fixed-model Marginal-SAGE MSE contribution for LGBM and MLP. Use when an agent needs a reproducible Top-K factor ranking, mRMR redundancy filtering, SAGE global contribution estimates, or auditable selection artifacts without third-party mRMR/SAGE runtime packages, model HPO, factor generation, portfolio optimization, or backtesting."
+metadata:
+  short-description: Deterministic mRMR or fixed-model Marginal-SAGE factor ranking
+  quantSkills:
+    organization: QuantSkills
+    organization_url: https://github.com/quantskills
+    repository: skill-factor-ranking-sage
+    repository_url: https://github.com/quantskills/skill-factor-ranking-sage
+    project_type: skill
+    collection: factor-selection
+    license: GPL-3.0-only
+    category: tooling
+    tags: [factor-selection, mrmr, sage, model-interpretability]
+    platforms: [codex]
+    language: zh-en
+    status: active
+    validation_level: runnable
+    maintainer_type: community
+    requires: []
+    summary_zh: 使用本地有限复现的回归 mRMR 或固定模型 Marginal-SAGE 对量化多因子数据进行可复现 Top-K 排名。
+    summary_en: Rank quantitative model factors with local regression mRMR or fixed-model Marginal-SAGE and export reproducible Top-K artifacts.
 ---
 
-<!-- 可选：qsh-form 表单声明——quantskillhub 会用它渲染该技能的定制运行表单；删除本块则退化为通用主输入框，功能不受影响 -->
-```json qsh-form
-{
-  "version": 1,
-  "task": {
-    "placeholder": "例如：分析指定标的并生成摘要",
-    "required": true
-  },
-  "fields": [
-    {
-      "key": "market",
-      "type": "select",
-      "label": "市场",
-      "options": [
-        { "value": "a_share", "label": "A 股" }
-      ]
-    },
-    {
-      "key": "trade_date",
-      "type": "date",
-      "label": "交易日期"
-    }
-  ],
-  "prompt_template": "请处理任务：{{task}}；市场：{{market}}；日期：{{trade_date}}。附件：{{#attachments}}"
-}
-```
+# Factor Ranking SAGE
 
-# My Skill Name
-
-Use this skill to <核心用途一句话>.
+Use this skill to rank local quantitative factors with exactly one standard method per run. Keep factor generation, model hyperparameter optimization, portfolio construction, and final trading validation outside this skill.
 
 ## Core Workflow
 
-1. Step one.
-2. Step two.
+1. Read references/input_schema.md before preparing the input JSON.
+2. Provide local factor and label CSV files with one unique row per (date, ticker) observation.
+3. Configure one fixed train/validation split and an embargo suitable for the label horizon.
+4. Choose one mode:
+   - Use mode=mrmr for deterministic regression F-statistic relevance and Pearson-redundancy Top-K selection on training rows.
+   - Use mode=sage for fixed-model Marginal-SAGE MSE contribution. Choose model.type=lgbm or model.type=mlp.
+5. Run the matching smoke configuration first:
+
+~~~bash
+python scripts/run_factor_selection.py --input examples/factor_selection_mrmr_smoke.json
+python scripts/run_factor_selection.py --input examples/factor_selection_lgbm_smoke.json
+python scripts/run_factor_selection.py --input examples/factor_selection_mlp_smoke.json
+~~~
+
+6. Run the user's JSON through the same CLI:
+
+~~~bash
+python scripts/run_factor_selection.py --input <input-json>
+~~~
+
+7. Read references/output_contract.md before consuming selected_factors.json, the method-specific ranking CSV, and selection_report.md.
+8. Keep a locked holdout outside the selection run and independently compare the selected subset with full-factor and random-subset baselines.
+
+## Method Boundaries
+
+- Run mRMR and SAGE independently. Do not combine their scores.
+- In mRMR mode, use training rows only. The validation rows are retained for split consistency but are not used by the selector.
+- In SAGE mode, fit one configured model on training rows and explain sampled validation loss with the local empirical MarginalImputer and permutation estimator.
+- Treat SAGE convergence metadata and standard errors as required diagnostics, not optional details.
+- Treat every Top-K result as a ranking candidate. Neither mRMR nor SAGE proves that K is optimal or that a retrained subset will improve out-of-sample LGBM/MLP performance.
+- Do not add native model importance, SHAP, permutation importance, drop-one, retraining coalitions, backward pruning, add-back, custom combined scores, or portfolio logic to this skill.
 
 ## Output Contract
 
-Produce:
+Write each run under output_root/runs/<run_id>/ with common manifests, a selected-factor JSON, a report, and mode-specific artifacts:
 
-- `<output_file_1>`
-- a concise report
+- mRMR: mrmr_ranking.csv and mrmr_redundancy_matrix.csv
+- SAGE: sage_values.csv and sage_metadata.json
 
 ## References
 
-Use `references/source_boundary.md`.
+- Use references/source_boundary.md for data, algorithm, and research boundaries.
+- Use references/input_schema.md for input fields and mode-specific configuration.
+- Use references/output_contract.md for artifact names and result fields.
+- Use references/metric_definitions.md to interpret mRMR and SAGE values.
+- Use references/validation_notes.md before assigning research meaning to a ranking.
+- Use references/algorithm_sources.md for upstream algorithm provenance and notices.

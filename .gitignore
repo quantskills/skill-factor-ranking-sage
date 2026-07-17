@@ -1,7 +1,8 @@
 __pycache__/
-*.pyc
+*.py[cod]
 .DS_Store
-# Git 卫生:原始导出与大数据不入库
+.pytest_cache/
+outputs/
 *.parquet
 prices/
 real_runs/

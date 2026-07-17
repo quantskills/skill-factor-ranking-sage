@@ -1,2 +1,5 @@
-name: my-skill-name
+name: factor-ranking-sage
 entrypoint: SKILL.md
+display_name: Factor Ranking SAGE
+short_description: Rank quant factors with deterministic mRMR or Marginal-SAGE.
+default_prompt: Run the mRMR smoke factor selection using examples/factor_selection_mrmr_smoke.json and summarize the selected factors, ranking artifacts, and research boundaries.
