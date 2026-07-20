@@ -1,6 +1,6 @@
 # Algorithm Sources And Notices
 
-The runtime implementations are deliberately limited, reference-compatible reproductions of standard mRMR regression selection and Marginal-SAGE for regression MSE. The external packages are used only by optional parity tests and are not runtime dependencies.
+The runtime reproduces the documented core workflows of mRMR regression selection and Marginal-SAGE for regression MSE. Optional parity tests compare local results with the cited reference implementations.
 
 ## mRMR Reference
 

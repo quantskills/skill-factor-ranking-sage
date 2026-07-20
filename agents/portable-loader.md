@@ -14,8 +14,8 @@
 3. 仅在需要时读取 <FACTOR_RANKING_SAGE_SKILL_ROOT>/references/ 下的引用文件。
 4. 在读取相关说明后，从 Skill 根目录运行内置脚本。
 5. 保持文档中定义的配置字段、算法边界、文件路径、输出约定、验证边界和数据来源边界。
-6. 不要编造 Skill 未支持的 SHAP、Permutation Importance、drop-one、retrain coalition、HPO、回测或组合优化行为。
-7. 将输出视为因子排名候选，不要解释为样本外提升证明、交易信号、收益承诺或生产交易验证。
+6. 仅执行 SKILL.md 声明的 mRMR 或 SAGE 排名模式。
+7. 按照指标定义解释排名、标准误和收敛信息。
 ~~~
 
 ## 用途
@@ -41,7 +41,7 @@ python scripts/run_factor_selection.py --input examples/factor_selection_mrmr_sm
 3. 配置固定训练/验证窗口和与标签周期匹配的 embargo。
 4. 执行入口命令并检查 run_manifest.json。
 5. 按照 references/output_contract.md 消费排名和选中因子。
-6. 在 Skill 外部使用锁定测试集验证完整模型、选中子集和随机子集。
+6. 汇总因子排名、诊断信息和运行清单。
 
 ## 输出产物
 
@@ -55,8 +55,8 @@ python scripts/run_factor_selection.py --input examples/factor_selection_mrmr_sm
 - references/input_schema.md：输入参数说明。
 - references/output_contract.md：输出文件约定。
 - references/metric_definitions.md：指标定义。
-- references/validation_notes.md：验证限制。
+- references/validation_notes.md：验证说明。
 
-## 边界说明
+## 方法边界
 
-本 Skill 不生成因子、不优化模型参数、不运行组合回测。mRMR 和 SAGE 排名都不构成样本外提升或交易有效性的证明。
+本 Skill 提供回归 mRMR 和固定模型 Marginal-SAGE 两种排名模式。详细的数据、算法与研究边界见 references/source_boundary.md。

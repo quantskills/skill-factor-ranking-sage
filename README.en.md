@@ -1,10 +1,8 @@
-# skill-factor-ranking-sage
+# Factor Ranking SAGE
 
 **English** | [简体中文](README.md)
 
-> A Codex / QUANTSKILLS factor-selection skill that ranks local quantitative factors with deterministic regression mRMR or fixed-model Marginal-SAGE and writes auditable Top-K artifacts.
-
-This community project is not official certification, investment advice, or production trading validation.
+> A Codex / QUANTSKILLS skill that applies regression mRMR or fixed-model Marginal-SAGE to local factor and label data and exports reproducible, auditable Top-K rankings.
 
 ## What It Does
 
@@ -14,12 +12,6 @@ The repository packages two independent factor-ranking methods behind one local 
 - **Marginal-SAGE** fits one LGBM or MLP model and estimates global validation MSE contribution with empirical marginal imputation and random factor permutations.
 
 Both methods use the same JSON configuration workflow and command-line entry point, with inspectable ranking artifacts and run records.
-
-## What It Does Not Do
-
-The skill does not generate factors, tune model hyperparameters, choose an optimal K, run SHAP or permutation importance, perform retraining coalitions or drop-one selection, construct portfolios, or run a production backtest.
-
-A Top-K ranking is a research candidate. It is not proof that a retrained subset improves holdout model or trading performance.
 
 ## Quick Start
 
@@ -45,7 +37,7 @@ The bundled toy CSV files are synthetic data constructed for smoke tests. They d
 
 - mRMR uses training rows only.
 - SAGE fits on training rows and estimates contribution on sampled validation rows.
-- available_date is optional. When it is absent, the runtime reports point-in-time risk instead of claiming that the inputs are leakage-free.
+- available_date is optional. When it is absent, the runtime records a point-in-time notice in the results.
 
 See references/input_schema.md for the full JSON contract.
 
@@ -59,12 +51,12 @@ Read references/output_contract.md and references/metric_definitions.md before c
 
 ## Validation and Interpretation
 
-- mRMR relevance and redundancy do not optimize retrained LGBM/MLP holdout performance.
-- SAGE values explain fixed-model average MSE contribution and do not solve the best-size-K retraining problem.
-- Inspect sage_std, converged, and convergence_ratio before interpreting a SAGE ordering.
-- Validate Top-K on a locked holdout against the full factor set and multiple random Top-K baselines.
+- mRMR relevance and redundancy characterize target association and pairwise factor overlap.
+- SAGE values characterize each factor's average MSE contribution in a fixed model.
+- Use sage_std, converged, and convergence_ratio to assess contribution and ranking stability.
+- Compare Top-K on a locked holdout against the full factor set and multiple random Top-K baselines.
 
-The current runnable validation scope covers smoke workflows, method behavior, convergence diagnostics, and output contracts. It does not claim positive out-of-sample RankIC, MSE improvement, portfolio returns, or trading performance.
+The current runnable validation scope covers smoke workflows, method behavior, convergence diagnostics, and output contracts.
 
 ## References
 
@@ -73,7 +65,11 @@ The current runnable validation scope covers smoke workflows, method behavior, c
 - references/output_contract.md: artifact contract
 - references/metric_definitions.md: mRMR and SAGE values
 - references/validation_notes.md: validation limitations
-- references/algorithm_sources.md: upstream provenance and notices
+- references/algorithm_sources.md: algorithm provenance and license notices
+
+## Project Status
+
+This is a QUANTSKILLS Community Project for quantitative research and education. It reproduces the documented mRMR and Marginal-SAGE workflows on user-provided data and does not constitute investment advice.
 
 ## License
 

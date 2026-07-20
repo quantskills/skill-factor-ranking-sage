@@ -19,5 +19,3 @@ Each run writes `output_root/runs/<run_id>/`.
 
 - `sage_values.csv`: all factors sorted by local `sage_value`, with local standard errors in `sage_std`.
 - `sage_metadata.json`: implementation version, explanation type, loss, sample sizes, convergence status, and convergence ratio.
-
-No third-party mRMR/SAGE runtime package, SHAP, drop-one, retraining coalition, backward pruning, add-back, core/candidate, or custom combined-score artifact is used.

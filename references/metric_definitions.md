@@ -17,7 +17,7 @@ score(j) = relevance(j) / aggregate(abs(correlation(j, S)))
 - `denominator=max`: aggregate redundancy by the maximum.
 - `0.001`: fixed redundancy floor used by the reference-compatible implementation.
 
-mRMR does not train LGBM or MLP and does not report model contribution.
+The mRMR output is a statistical relevance and redundancy ranking.
 
 ## Local Marginal-SAGE
 
@@ -31,6 +31,6 @@ The implementation uses empirical marginal imputation, random factor permutation
 
 `n_permutations` follows the reference estimator's sample-count semantics rather than counting one dataset-wide path. Each sampled evaluation row receives its own random factor permutation, and fixed budgets are rounded up to a complete batch.
 
-SAGE values are fixed-model contributions. They are not contributions after retraining without a factor.
+SAGE values describe fixed-model contributions under the configured marginal imputation and permutation procedure.
 
 See `algorithm_sources.md` for algorithm provenance and license notices.

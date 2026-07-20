@@ -1,8 +1,8 @@
 ---
 name: factor-ranking-sage
-description: "Rank and select quantitative model factors from local factor and label CSV files with one of two self-contained methods: deterministic regression mRMR using F-statistic relevance and Pearson redundancy, or fixed-model Marginal-SAGE MSE contribution for LGBM and MLP. Use when an agent needs a reproducible Top-K factor ranking, mRMR redundancy filtering, SAGE global contribution estimates, or auditable selection artifacts without third-party mRMR/SAGE runtime packages, model HPO, factor generation, portfolio optimization, or backtesting."
+description: "Rank and select quantitative model factors from local factor and label CSV files with regression mRMR using F-statistic relevance and Pearson redundancy, or fixed-model Marginal-SAGE MSE contribution for LGBM and MLP. Use when an agent needs reproducible Top-K factor rankings, mRMR redundancy filtering, SAGE global contribution estimates, convergence diagnostics, or auditable selection artifacts."
 metadata:
-  short-description: Deterministic mRMR or fixed-model Marginal-SAGE factor ranking
+  short-description: Regression mRMR or fixed-model Marginal-SAGE factor ranking
   quantSkills:
     organization: QuantSkills
     organization_url: https://github.com/quantskills
@@ -19,13 +19,13 @@ metadata:
     validation_level: runnable
     maintainer_type: community
     requires: []
-    summary_zh: 使用本地有限复现的回归 mRMR 或固定模型 Marginal-SAGE 对量化多因子数据进行可复现 Top-K 排名。
+    summary_zh: 使用回归 mRMR 或固定模型 Marginal-SAGE 对量化多因子数据进行可复现 Top-K 排名。
     summary_en: Rank quantitative model factors with local regression mRMR or fixed-model Marginal-SAGE and export reproducible Top-K artifacts.
 ---
 
 # Factor Ranking SAGE
 
-Use this skill to rank local quantitative factors with exactly one standard method per run. Keep factor generation, model hyperparameter optimization, portfolio construction, and final trading validation outside this skill.
+Use this skill to rank local quantitative factors with one supported method per run.
 
 ## Core Workflow
 
@@ -58,8 +58,8 @@ python scripts/run_factor_selection.py --input <input-json>
 - In mRMR mode, use training rows only. The validation rows are retained for split consistency but are not used by the selector.
 - In SAGE mode, fit one configured model on training rows and explain sampled validation loss with the local empirical MarginalImputer and permutation estimator.
 - Treat SAGE convergence metadata and standard errors as required diagnostics, not optional details.
-- Treat every Top-K result as a ranking candidate. Neither mRMR nor SAGE proves that K is optimal or that a retrained subset will improve out-of-sample LGBM/MLP performance.
-- Do not add native model importance, SHAP, permutation importance, drop-one, retraining coalitions, backward pruning, add-back, custom combined scores, or portfolio logic to this skill.
+- Treat each Top-K result as the ordered output of the configured ranking method, with K supplied by the user.
+- Keep the runtime limited to the two documented ranking modes and their output contracts.
 
 ## Output Contract
 
@@ -75,4 +75,4 @@ Write each run under output_root/runs/<run_id>/ with common manifests, a selecte
 - Use references/output_contract.md for artifact names and result fields.
 - Use references/metric_definitions.md to interpret mRMR and SAGE values.
 - Use references/validation_notes.md before assigning research meaning to a ranking.
-- Use references/algorithm_sources.md for upstream algorithm provenance and notices.
+- Use references/algorithm_sources.md for algorithm provenance and license notices.
